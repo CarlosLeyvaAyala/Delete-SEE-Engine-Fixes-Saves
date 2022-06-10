@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <Transactions>
+    <Transaction>2022/06/10 15:26:24.608,=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2022/06/10 15:28:28.997,C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\UnitMain.pas=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2022/06/10 15:28:28.997,C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\UnitMain.dfm=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>2022/06/10 15:28:34.509,C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\DeleteSaves.dproj=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+  </Transactions>
+</BorlandProject>
