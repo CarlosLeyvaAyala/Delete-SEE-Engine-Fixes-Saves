@@ -54,7 +54,7 @@ begin
     path := 'F:\Skyrim SE\MO2\profiles\3BBB\saves';
   end;
   const f = ProcessFiles(o);
-  Caption := f.ToString;
+  Caption := f.Count.ToString;
 end;
 
 end.

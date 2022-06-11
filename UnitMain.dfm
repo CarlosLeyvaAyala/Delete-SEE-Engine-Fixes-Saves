@@ -147,9 +147,5 @@ object frmMain: TfrmMain
     Align = alClient
     ItemHeight = 13
     TabOrder = 1
-    ExplicitLeft = 40
-    ExplicitTop = 80
-    ExplicitWidth = 121
-    ExplicitHeight = 97
   end
 end

@@ -16,12 +16,18 @@ type
     span15: Real;
   end;
 
-function ProcessFiles(o: TProcessOptions): Integer;
+function ProcessFiles(o: TProcessOptions): TStringList;
 
 implementation
 
+uses
+  Functional.Sequence;
+
 const
   extFilter = '*.ess';
+
+var
+  deleteTheseFiles: TStringList;
 
 function IfThen(AValue: Boolean; const ATrue: Boolean; const AFalse: Boolean): Boolean;
 begin
@@ -54,9 +60,6 @@ end;
 
 function GetFileDate(fileName: string): TDateTime;
 begin
-//  var data: TSearchRec;
-//  FindFirst(fileName, faAnyFile, data);
-//  Result := data.TimeStamp;
   Result := TFile.GetCreationTime(fileName);
 end;
 
@@ -84,20 +87,41 @@ begin
   TFile.Move(fileName, Result);
 end;
 
-procedure SendToBin(fileName: string);
+function FileNameToPChar(fileName: string): string;
+  procedure AddOther(ext: string);
+  begin
+    const other = TPath.ChangeExtension(fileName, ext);
+    if FileExists(other) then Result := Result + #0 + other;
+  end;
 begin
-  if not FileExists(fileName) then Exit;
+  Result := fileName;
+  AddOther('skse');
+  AddOther('bak');
+end;
+//
+//function ReducePChar(const input: string; const Accumulator: string): string;
+//begin
+//  Result := Accumulator + IfThen(Accumulator = '', '', aSeparator) + input;
+//end;
+
+procedure SendToBin(markedForDelete: TStringList);
+begin
+  const files = TSeq.From(markedForDelete)
+    .Map(FileNameToPChar)
+    .Fold<string>(ReduceStr(#0), '');
+//  if not FileExists(fileName) then Exit;
 
   var Op: TSHFileOpStruct;
   FillChar(Op, SizeOf(Op), 0);
 
   Op.wFunc := FO_DELETE;
-  Op.pFrom := PChar(fileName + #0);
-  Op.fFlags := FOF_ALLOWUNDO or FOF_NOCONFIRMATION or FOF_SILENT or FOF_NOERRORUI;
+  Op.pFrom := PChar(files + #0);
+  Op.fFlags := FOF_ALLOWUNDO or FOF_NOCONFIRMATION;
   ShFileOperation(Op);
 end;
 
-procedure DoDelete(allFiles, deletedFiles: TStringList; minSpan: Integer);
+procedure DoDelete(allFiles, deletedFiles: TStringList; minSpan: Integer;
+  output: TStrings);
 begin
   // Gather files to delete
   var i := 1;
@@ -106,25 +130,27 @@ begin
     const d1 = GetFileDate(allFiles[i - 1]);
     const span = MinuteSpan(d1, d2);
     if span < minSpan then begin
-      deletedFiles.Add(allFiles[i]);
+      const fn = allFiles[i];
+      deletedFiles.Add(fn);
       allFiles.Delete(i);
+      output.Add(ExtractFileName(fn))
     end
     else
       Inc(i);
   end;
 
   // Time to delete files
-  for var del in deletedFiles do begin
-    const cosave =TPath.ChangeExtension(del, 'skse');
-    const bak = TPath.ChangeExtension(del, 'bak');
-    SendToBin(del);
-    SendToBin(cosave);
-    SendToBin(bak);
-  end;
+//  for var del in deletedFiles do begin
+//    const cosave =TPath.ChangeExtension(del, 'skse');
+//    const bak = TPath.ChangeExtension(del, 'bak');
+//    SendToBin(del);
+//    SendToBin(cosave);
+//    SendToBin(bak);
+//  end;
 end;
 
-function DeleteFiles(path: string; output: TStrings; lastSave: TDateTime;
-  minSpan: Integer; moreThanHours: Real; lessThanHours: Real = -1): Integer;
+procedure DeleteFiles(path: string; output: TStrings; lastSave: TDateTime;
+  minSpan: Integer; moreThanHours: Real; lessThanHours: Real = -1);
 begin
   var r := 0;
   const f = FilterByTime(lastSave, moreThanHours, lessThanHours);
@@ -135,31 +161,32 @@ begin
   OnStringList(procedure (allFiles: TStringList) begin
     for var p in files do allFiles.Add(p);
     allFiles.CustomSort(SortDesc);
-
-    OnStringList(procedure (deletedFiles: TStringList) begin
-      DoDelete(allFiles, deletedFiles, minSpan);
-      for var l in deletedFiles do output.Add(ExtractFileName(l));
-      r := deletedFiles.Count;
-    end);
+    DoDelete(allFiles, deleteTheseFiles, minSpan, output);
   end);
 
   output.Add('');
-
-  Result := r;
 end;
 
-function ProcessFiles(o: TProcessOptions): Integer;
+function ProcessFiles(o: TProcessOptions): TStringList;
 begin
   const last = GetLastSaved(o.path);
   const p = o.path;
   const oo = o.output;
 //  DeleteFiles(p, oo, last, 0, 0, o.leaveAlone);
-  Result := DeleteFiles(p, oo, last, 2, o.leaveAlone, o.span2);
-  Result := Result + DeleteFiles(p, oo, last, 5, o.span2, o.span5);
-  Result := Result + DeleteFiles(p, oo, last, 10, o.span5, o.span10);
-  Result := Result + DeleteFiles(p, oo, last, 15, o.span10, o.span15);
-  Result := Result + DeleteFiles(p, oo, last, 24 * 60, o.span15);
+  DeleteFiles(p, oo, last, 2, o.leaveAlone, o.span2);
+  DeleteFiles(p, oo, last, 5, o.span2, o.span5);
+  DeleteFiles(p, oo, last, 10, o.span5, o.span10);
+  DeleteFiles(p, oo, last, 15, o.span10, o.span15);
+  DeleteFiles(p, oo, last, 24 * 60, o.span15);
+  Result := deleteTheseFiles;
+  SendToBin(deleteTheseFiles);
 end;
+
+initialization
+  deleteTheseFiles := TStringList.Create;
+
+finalization
+  deleteTheseFiles.Free;
 
 end.
 
