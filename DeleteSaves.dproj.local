@@ -1,9 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
-  <Transactions>
-    <Transaction>2022/06/10 15:26:24.608,=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>2022/06/10 15:28:28.997,C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\UnitMain.pas=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>2022/06/10 15:28:28.997,C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\UnitMain.dfm=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
-    <Transaction>2022/06/10 15:28:34.509,C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\DeleteSaves.dproj=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+	<Transactions>
+    <Transaction>2022/06/10 15:26:24.000.608,=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2022/06/10 15:28:28.000.997,C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Unit1.dfm=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\UnitMain.dfm</Transaction>
+    <Transaction>2022/06/10 15:28:28.000.997,C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Unit1.pas=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\UnitMain.pas</Transaction>
+    <Transaction>2022/06/10 15:28:34.000.509,C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Project1.dproj=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\DeleteSaves.dproj</Transaction>
+    <Transaction>2022/06/10 16:24:26.019,=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\Unit1.pas</Transaction>
+    <Transaction>2022/06/10 16:24:37.911,C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\Backend.pas=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\Unit1.pas</Transaction>
+    <Transaction>2022/06/10 18:26:24.131,=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\lib\Functions.Utils.pas</Transaction>
+    <Transaction>2022/06/10 18:27:20.385,=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\imported\Functional.FuncFactory.pas</Transaction>
+    <Transaction>2022/06/10 18:27:20.451,=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\imported\Functional.Sequence.pas</Transaction>
+    <Transaction>2022/06/10 18:27:20.522,=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\imported\Functional.Value.pas</Transaction>
+    <Transaction>2022/06/10 18:28:56.908,=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\lib\Functions.Strings.pas</Transaction>
+    <Transaction>2022/06/10 18:29:22.758,C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\lib\Functions.Utils.pas=</Transaction>
+    <Transaction>2022/06/10 18:30:31.733,=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\lib\Functions.DB.pas</Transaction>
+    <Transaction>2022/06/10 18:30:31.819,=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\lib\Functions.Graphics.pas</Transaction>
+    <Transaction>2022/06/10 18:30:31.880,=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\lib\Functions.Math.pas</Transaction>
+    <Transaction>2022/06/10 18:30:31.943,=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\lib\Functions.Regex.pas</Transaction>
+    <Transaction>2022/06/10 18:30:32.034,=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\lib\Functions.UI.pas</Transaction>
+    <Transaction>2022/06/10 18:30:32.086,=C:\Users\Osrail\Documents\Embarcadero\Studio\Projects\Delete-SEE-Engine-Fixes-Saves\lib\Functions.Utils.pas</Transaction>
   </Transactions>
 </BorlandProject>

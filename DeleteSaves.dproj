@@ -106,9 +106,20 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="UnitMain.pas">
-            <Form>Form1</Form>
+            <Form>frmMain</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="Backend.pas"/>
+        <DCCReference Include="imported\Functional.FuncFactory.pas"/>
+        <DCCReference Include="imported\Functional.Sequence.pas"/>
+        <DCCReference Include="imported\Functional.Value.pas"/>
+        <DCCReference Include="lib\Functions.Strings.pas"/>
+        <DCCReference Include="lib\Functions.DB.pas"/>
+        <DCCReference Include="lib\Functions.Graphics.pas"/>
+        <DCCReference Include="lib\Functions.Math.pas"/>
+        <DCCReference Include="lib\Functions.Regex.pas"/>
+        <DCCReference Include="lib\Functions.UI.pas"/>
+        <DCCReference Include="lib\Functions.Utils.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -135,7 +146,7 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="Win32\Debug\DeleteSaves.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="DeleteSaves.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>DeleteSaves.exe</RemoteName>
                         <Overwrite>true</Overwrite>
