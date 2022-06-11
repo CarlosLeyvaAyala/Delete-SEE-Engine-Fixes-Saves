@@ -3,9 +3,9 @@ unit UnitMain;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls,
-  Vcl.NumberBox, System.IOUtils;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
+  Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.NumberBox, System.StrUtils;
 
 type
   TfrmMain = class(TForm)
@@ -43,6 +43,9 @@ uses
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
+  const param = ParamStr(1);
+  const runingDir = ExtractFilePath(Application.ExeName);
+
   var o: TProcessOptions;
   with o do begin
     output := lstOutput.Items;
@@ -51,10 +54,22 @@ begin
     span5 := nmbrbx5min.Value;
     span10 := nmbrbx10min.Value;
     span15 := nmbrbx15min.Value;
-    path := 'F:\Skyrim SE\MO2\profiles\3BBB\saves';
+    path := IfThen(param <> '', param, runingDir);
   end;
-  const f = ProcessFiles(o);
-  Caption := f.Count.ToString;
+
+  try
+    const p = ProcessFiles(o);
+    Caption := p.processResult;
+  except
+    on E: Exception do begin
+      const i = lstOutput.Items;
+      i.Add('There was an error while processing files:');
+      i.Add(e.Message);
+      i.Add('');
+      i.Add('Are you sure you are running this in your saves folder and have proper permissions?');
+    end;
+  end;
 end;
 
 end.
+

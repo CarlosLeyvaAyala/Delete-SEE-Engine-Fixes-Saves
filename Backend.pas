@@ -3,7 +3,7 @@ unit Backend;
 interface
 
 uses
-  System.Classes, System.IOUtils, System.SysUtils, System.DateUtils, System.Generics.Collections, Functions.Strings, System.StrUtils, Winapi.ShellAPI;
+  System.Classes, System.IOUtils, System.SysUtils, System.DateUtils, System.Generics.Collections, Functions.Strings, System.StrUtils, Winapi.ShellAPI, System.Math;
 
 type
   TProcessOptions = record
@@ -16,12 +16,19 @@ type
     span15: Real;
   end;
 
-function ProcessFiles(o: TProcessOptions): TStringList;
+  TProcessOutput = record
+    deletedCount: Integer;
+    deletedSize: Int64;
+    function deletedSizePretty: string;
+    function processResult: string;
+  end;
+
+function ProcessFiles(o: TProcessOptions): TProcessOutput;
 
 implementation
 
 uses
-  Functional.Sequence;
+  Functional.Sequence, Functions.Math;
 
 const
   extFilter = '*.ess';
@@ -35,6 +42,25 @@ begin
     Result := ATrue
   else
     Result := AFalse;
+end;
+
+function FileSize(fileName : string) : Int64;
+begin
+  var sr : TSearchRec;
+  if FindFirst(fileName, faAnyFile, sr ) = 0 then
+    Result := Int64(sr.FindData.nFileSizeHigh) shl Int64(32) + Int64(sr.FindData.nFileSizeLow)
+  else
+  Result := -1;
+  FindClose(sr);
+end;
+
+function BytesToStr(bytes: Int64): string;
+const
+  Description: Array [0 .. 8] of string = ('Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
+begin
+  var i := 0;
+  while bytes > Power(1024, i + 1) do Inc(i);
+  Result := FormatFloat('###0.##', bytes / Power(1024, i)) + #32 + Description[i];
 end;
 
 function FilterByTime(lastSaved: TDateTime; moreThanHours: Real; lessThanHours:
@@ -71,6 +97,11 @@ begin
   Result := GetFileDate(last);
 end;
 
+function DeletedFilesSize(list: TStringList): Int64;
+begin
+  Result := TSeq.From(list).Map<Int64>(FileSize).Fold<Int64>(SumF, 0);
+end;
+
 function SortDesc(List: TStringList; Index1, Index2: Integer):
 Integer;
 begin
@@ -98,18 +129,14 @@ begin
   AddOther('skse');
   AddOther('bak');
 end;
-//
-//function ReducePChar(const input: string; const Accumulator: string): string;
-//begin
-//  Result := Accumulator + IfThen(Accumulator = '', '', aSeparator) + input;
-//end;
 
 procedure SendToBin(markedForDelete: TStringList);
 begin
+  if markedForDelete.Count < 1 then Exit;
+
   const files = TSeq.From(markedForDelete)
     .Map(FileNameToPChar)
     .Fold<string>(ReduceStr(#0), '');
-//  if not FileExists(fileName) then Exit;
 
   var Op: TSHFileOpStruct;
   FillChar(Op, SizeOf(Op), 0);
@@ -138,21 +165,11 @@ begin
     else
       Inc(i);
   end;
-
-  // Time to delete files
-//  for var del in deletedFiles do begin
-//    const cosave =TPath.ChangeExtension(del, 'skse');
-//    const bak = TPath.ChangeExtension(del, 'bak');
-//    SendToBin(del);
-//    SendToBin(cosave);
-//    SendToBin(bak);
-//  end;
 end;
 
 procedure DeleteFiles(path: string; output: TStrings; lastSave: TDateTime;
   minSpan: Integer; moreThanHours: Real; lessThanHours: Real = -1);
 begin
-  var r := 0;
   const f = FilterByTime(lastSave, moreThanHours, lessThanHours);
   const files = TDirectory.GetFiles(path, extFilter, f);
   output.Add(Format('Files deleted because they were out of the %d minute span', [minSpan]));
@@ -167,19 +184,34 @@ begin
   output.Add('');
 end;
 
-function ProcessFiles(o: TProcessOptions): TStringList;
+function ProcessFiles(o: TProcessOptions): TProcessOutput;
 begin
   const last = GetLastSaved(o.path);
   const p = o.path;
   const oo = o.output;
-//  DeleteFiles(p, oo, last, 0, 0, o.leaveAlone);
   DeleteFiles(p, oo, last, 2, o.leaveAlone, o.span2);
   DeleteFiles(p, oo, last, 5, o.span2, o.span5);
   DeleteFiles(p, oo, last, 10, o.span5, o.span10);
   DeleteFiles(p, oo, last, 15, o.span10, o.span15);
   DeleteFiles(p, oo, last, 24 * 60, o.span15);
-  Result := deleteTheseFiles;
+
+  Result.deletedCount := deleteTheseFiles.Count;
+  Result.deletedSize := DeletedFilesSize(deleteTheseFiles);
+
   SendToBin(deleteTheseFiles);
+end;
+
+{ TProcessOutput }
+
+function TProcessOutput.deletedSizePretty: string;
+begin
+  Result := BytesToStr(deletedSize);
+end;
+
+function TProcessOutput.processResult: string;
+begin
+  const fmt = '%d files sent to the trash bin (%s)';
+  Result := Format(fmt, [deletedCount, deletedSizePretty]);
 end;
 
 initialization

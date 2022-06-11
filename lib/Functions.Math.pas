@@ -5,7 +5,11 @@ interface
 uses
   System.SysUtils, System.Math;
 
-function Sum(n: Integer): TFunc<Integer, Integer>;
+function Sum(n: Integer): TFunc<Integer, Integer>; overload;
+
+function Sum(n: Int64): TFunc<Int64, Int64>; overload;
+
+function SumF(const item, acc: Int64): Int64;
 
 function LinCurve(x1, y1, x2, y2: Real): TFunc<Real, Real>;
 
@@ -31,10 +35,24 @@ begin
   Result := ForceRange(0, 1)(x);
 end;
 
+function SumF(const item, acc: Int64): Int64;
+begin
+  Result := item + acc;
+end;
+
 function Sum(n: Integer): TFunc<Integer, Integer>;
 begin
   Result :=
     function(x: Integer): Integer
+    begin
+      Result := x + n;
+    end;
+end;
+
+function Sum(n: Int64): TFunc<Int64, Int64>;
+begin
+  Result :=
+    function(x: Int64): Int64
     begin
       Result := x + n;
     end;
