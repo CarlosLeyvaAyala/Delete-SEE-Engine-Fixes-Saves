@@ -92,9 +92,10 @@ end;
 function GetLastSaved(dir: string): TDateTime;
 begin
   const all = TDirectory.GetFiles(dir, extFilter);
-  const n = Length(all);
-  const last = all[n - 1];
-  Result := GetFileDate(last);
+  var mx: TDateTime := -1;
+  for var f in all do
+    mx := Max(mx, GetFileDate(f));
+  Result := mx;
 end;
 
 function DeletedFilesSize(list: TStringList): Int64;
