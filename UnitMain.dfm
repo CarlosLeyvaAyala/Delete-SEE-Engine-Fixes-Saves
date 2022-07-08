@@ -123,18 +123,18 @@ object frmMain: TfrmMain
         Mode = nbmFloat
         MaxValue = 9999.000000000000000000
         TabOrder = 3
-        Value = 24.000000000000000000
+        Value = 6.000000000000000000
         SpinButtonOptions.Placement = nbspCompact
       end
       object nmbrbx15min: TNumberBox
         Left = 112
-        Top = 190
+        Top = 193
         Width = 70
         Height = 21
         Mode = nbmFloat
         MaxValue = 9999.000000000000000000
         TabOrder = 4
-        Value = 72.000000000000000000
+        Value = 24.000000000000000000
         SpinButtonOptions.Placement = nbspCompact
       end
     end

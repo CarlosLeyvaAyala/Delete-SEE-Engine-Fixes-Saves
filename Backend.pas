@@ -19,6 +19,9 @@ type
   TProcessOutput = record
     deletedCount: Integer;
     deletedSize: Int64;
+    leftCount: Integer;
+    leftSize: Int64;
+    function leftSizePretty: string;
     function deletedSizePretty: string;
     function processResult: string;
   end;
@@ -32,6 +35,7 @@ uses
 
 const
   extFilter = '*.ess';
+  skseFilter = '*.skse';
 
 var
   deleteTheseFiles: TStringList;
@@ -98,7 +102,7 @@ begin
   Result := mx;
 end;
 
-function DeletedFilesSize(list: TStringList): Int64;
+function FilesListSize(list: TStringList): Int64;
 begin
   Result := TSeq.From(list).Map<Int64>(FileSize).Fold<Int64>(SumF, 0);
 end;
@@ -169,7 +173,7 @@ begin
 end;
 
 procedure DeleteFiles(path: string; output: TStrings; lastSave: TDateTime;
-  minSpan: Integer; moreThanHours: Real; lessThanHours: Real = -1);
+  minSpan: Integer; moreThanHours: Real; lessThanHours: Real = -1; doSortDesc: boolean = true);
 begin
   const f = FilterByTime(lastSave, moreThanHours, lessThanHours);
   const files = TDirectory.GetFiles(path, extFilter, f);
@@ -178,11 +182,31 @@ begin
 
   OnStringList(procedure (allFiles: TStringList) begin
     for var p in files do allFiles.Add(p);
-    allFiles.CustomSort(SortDesc);
+    if doSortDesc then allFiles.CustomSort(SortDesc)
+    else allFiles.Sort;
+
     DoDelete(allFiles, deleteTheseFiles, minSpan, output);
   end);
 
   output.Add('');
+end;
+
+procedure FilesLeft(const path: string; var o: TProcessOutput);
+  function CalcSize(arr: TArray<string>): Int64;
+  begin
+//    const a = arr;
+    var r: Int64 := 0;
+    OnStringList(procedure(lst: TStringList) begin
+      for var p in arr do lst.Add(p);
+      r := FilesListSize(lst);
+    end);
+    Result := r;
+  end;
+begin
+  const ess = TDirectory.GetFiles(path, extFilter);
+  const skse = TDirectory.GetFiles(path, skseFilter);
+  o.leftCount := Length(ess) + Length(skse);
+  o.leftSize := CalcSize(ess) + CalcSize(skse);
 end;
 
 function ProcessFiles(o: TProcessOptions): TProcessOutput;
@@ -194,12 +218,14 @@ begin
   DeleteFiles(p, oo, last, 5, o.span2, o.span5);
   DeleteFiles(p, oo, last, 10, o.span5, o.span10);
   DeleteFiles(p, oo, last, 15, o.span10, o.span15);
-  DeleteFiles(p, oo, last, 24 * 60, o.span15);
+  DeleteFiles(p, oo, last, 24 * 60, o.span15, -1, false);
 
   Result.deletedCount := deleteTheseFiles.Count;
-  Result.deletedSize := DeletedFilesSize(deleteTheseFiles);
+  Result.deletedSize := FilesListSize(deleteTheseFiles);
 
   SendToBin(deleteTheseFiles);
+
+  FilesLeft(p, Result);
 end;
 
 { TProcessOutput }
@@ -209,10 +235,15 @@ begin
   Result := BytesToStr(deletedSize);
 end;
 
+function TProcessOutput.leftSizePretty: string;
+begin
+  Result := BytesToStr(leftSize);
+end;
+
 function TProcessOutput.processResult: string;
 begin
-  const fmt = '%d files sent to the trash bin (%s)';
-  Result := Format(fmt, [deletedCount, deletedSizePretty]);
+  const fmt = '%d files sent to the trash bin (%s). Saves left: %d (%s).';
+  Result := Format(fmt, [deletedCount, deletedSizePretty, leftCount, leftSizePretty]);
 end;
 
 initialization
