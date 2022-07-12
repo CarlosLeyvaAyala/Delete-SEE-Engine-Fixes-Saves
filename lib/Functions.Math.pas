@@ -21,6 +21,8 @@ function ForceRange(min, max: Real): TFunc<Real, Real>;
 
 function ForcePercent(x: Real): Real;
 
+function PercentToReal(x: Real): Real;
+
 // Sample usage:
   //  var counter: TFunc<Integer>;
   //  counter := Count();
@@ -29,6 +31,11 @@ function ForcePercent(x: Real): Real;
 function Count(start: Integer = 0; step: Integer = 1): TFunc<Integer>;
 
 implementation
+
+function PercentToReal(x: Real): Real;
+begin
+  Result := x / 100;
+end;
 
 function ForcePercent(x: Real): Real;
 begin

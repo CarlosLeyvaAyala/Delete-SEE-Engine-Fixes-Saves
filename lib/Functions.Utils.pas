@@ -10,6 +10,8 @@ function Identity(s: string): string; overload;
 
 function Identity(i: Integer): Integer; overload;
 
+function Identity(x: Real): Real; overload;
+
 function NotNullStr(const s: string): Boolean;
 
 function NotNullStrField(const aField: string): Functional.FuncFactory.TPredicate
@@ -55,6 +57,11 @@ end;
 function Identity(i: Integer): Integer;
 begin
   Result := i;
+end;
+
+function Identity(x: Real): Real;
+begin
+  Result := x;
 end;
 
 procedure Identity;

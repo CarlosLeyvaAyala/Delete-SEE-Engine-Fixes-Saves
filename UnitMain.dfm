@@ -13,6 +13,7 @@ object frmMain: TfrmMain
   OldCreateOrder = False
   Position = poScreenCenter
   ShowHint = True
+  OnClose = FormClose
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
